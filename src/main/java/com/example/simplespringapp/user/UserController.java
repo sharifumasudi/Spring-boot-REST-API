@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<Users> getUsers() {
+    public Iterable<Users> getUsers() {
         return studentService.getUsers();
     }
 
