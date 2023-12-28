@@ -77,22 +77,22 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<String> updateUser(String username, String password){
+    public ResponseEntity<String> updateUser(String username, String password) {
 
-       try{
-         Users existingUser = userRepository.findByUsername(username).orElse(null);
-        if(existingUser == null){
-            return ResponseEntity.badRequest().body("User not found");
-        }else{
-            existingUser.setUsername(username);
-            existingUser.setPassword(password);
+        try {
+            Users existingUser = userRepository.findByUsername(username).orElse(null);
+            if (existingUser == null) {
+                return ResponseEntity.badRequest().body("User not found");
+            } else {
+                existingUser.setUsername(username);
+                existingUser.setPassword(password);
 
-            userRepository.save(existingUser);
+                userRepository.save(existingUser);
 
-            return ResponseEntity.ok("User updated successfully");
+                return ResponseEntity.ok("User updated successfully");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to update user");
         }
-       }catch(Exception e){
-        return ResponseEntity.status(500).body("Failed to update user");
-       }
     }
 }
