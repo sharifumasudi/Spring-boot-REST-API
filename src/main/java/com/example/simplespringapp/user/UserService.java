@@ -5,12 +5,15 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+// import java.time.LocalDate;
 
-import java.time.format.DateTimeFormatter;
+// import java.time.format.DateTimeFormatter;
 
 import com.example.simplespringapp.repositories.UserRepository;
 
@@ -24,8 +27,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<Users> getUsers() {
-        return userRepository.findAll();
+    public List<Users> getUsers(Integer page, Integer limit) {
+        int pageNumber = (page != null && page > 0) ? page - 1 : 0;
+        int pageSize = (limit != null && limit > 0) ? limit : 10;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Users> userPages = userRepository.findAll(pageable);
+        return userPages.getContent();
     }
 
     public List<Users> getUser(Integer Id) {
