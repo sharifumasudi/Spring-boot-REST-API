@@ -1,6 +1,6 @@
 package com.example.simplespringapp.user;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -18,15 +18,13 @@ public class Users {
 
     private String username;
 
-    private LocalDate created_at;
+    private LocalDateTime created_at;
 
     private String password;
 
-    public Users() {
+    public Users() {}
 
-    }
-
-    public Users(Integer id, String username, LocalDate created_at, String password) {
+    public Users(Integer id, String username, LocalDateTime created_at, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -41,7 +39,7 @@ public class Users {
         return username;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return created_at;
     }
 
@@ -57,7 +55,7 @@ public class Users {
         this.username = username;
     }
 
-    public void setDate(LocalDate created_at) {
+    public void setDate(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 

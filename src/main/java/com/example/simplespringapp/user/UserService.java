@@ -7,9 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+import java.time.format.DateTimeFormatter;
 
 import com.example.simplespringapp.repositories.UserRepository;
-import com.google.protobuf.Option;
 
 @Service
 public class UserService {
@@ -21,35 +24,40 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Iterable<Users> getUsers() {
+    public List<Users> getUsers() {
         return userRepository.findAll();
     }
 
-    public List<Users> getUser(String username, String password) {
-        Optional<Users> userOptional = userRepository.findByUsername(username);
+    public List<Users> getUser(Integer Id) {
+        Optional<Users> userOptional = userRepository.findById(Id);
 
         if (userOptional.isPresent()) {
             Users user = userOptional.get();
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            return Collections.singletonList(user);
+            // BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return Collections.singletonList(user);
-            }
+            // if (passwordEncoder.matches(password, user.getPassword())) {
+            // }
         }
 
         return Collections.emptyList();
     }
 
     public ResponseEntity<String> deleteUser(String username) {
-        Optional<Users> userOptional = userRepository.findByUsername(username);
+        if (username != null || !username.isEmpty() || username.matches("^[a-zA-Z0-9_]+$")) {
+            Optional<Users> userOptional = userRepository.findByUsername(username);
 
-        if (userOptional.isPresent()) {
-            Users userToDelete = userOptional.get();
+            if (userOptional.isPresent()) {
+                Users userToDelete = userOptional.get();
 
-            userRepository.delete(userToDelete);
-            return ResponseEntity.ok("Deleted successfully");
+                userRepository.delete(userToDelete);
+                return ResponseEntity.ok("Deleted successfully");
+            } else {
+                return ResponseEntity.ok("User not found");
+            }
         } else {
-            return ResponseEntity.ok("User not found");
+            return ResponseEntity.ok("Provided username is incorrect");
+
         }
     }
 
@@ -60,10 +68,12 @@ public class UserService {
             } else if (password == null || password.isEmpty()) {
                 return ResponseEntity.badRequest().body("Password can not be empty!");
             } else {
+                LocalDateTime now = LocalDateTime.now();
+
                 Users user = new Users(
                         null,
                         username,
-                        null,
+                        now,
                         null);
                 user.setPassword(password);
 
